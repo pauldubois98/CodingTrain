@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF8">
+    <title>Star Field</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            border: 1px black solid;
+            /* height: 20em; */
+            width: 90%;
+            max-height: 80%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Star field generatior</h1>
+    <form>
+
+    </form>
+    <canvas id="mainCanvas" height="800" width="1200"></canvas>
+</body>
+<script>
+    var mainContext = mainCanvas.getContext("2d")
+    var WIDTH = mainCanvas.width;
+    var HEIGHT = mainCanvas.height;
+    var NUMBER_STARTS = 1000
+    var STARTS = []
+    var INTERVAL = null;
+    var SPEED = 2
+    init()
+
+    function map(v, x0, x1, y0, y1) {
+        const alpha = (y1 - y0) / (x1 - x0)
+        return y0 + ((v - x0) * alpha)
+    }
+    function init() {
+        for (var i = 0; i < NUMBER_STARTS; i++) {
+            STARTS.push({
+                x: map(Math.random(), 0, 1, -100, 100),
+                y: map(Math.random(), 0, 1, -100, 100),
+                z: 1 + Math.random() * 100
+            })
+        }
+        INTERVAL = setInterval(update, 1000 / 30); // 30 FPS
+    }
+    function update() {
+        mainContext.fillStyle = "#000"
+        mainContext.fillRect(0, 0, WIDTH, HEIGHT)
+        mainContext.fillStyle = "#fff"
+        for (var i = 0; i < STARTS.length; i++) {
+            var star = STARTS[i]
+            const sx = map(star.x / star.z, -1, 1, 0, WIDTH)
+            const sy = map(star.y / star.z, -1, 1, 0, HEIGHT)
+            const psx = map(star.x / (star.z+SPEED), -1, 1, 0, WIDTH)
+            const psy = map(star.y / (star.z+SPEED), -1, 1, 0, HEIGHT)
+            drawCircle(mainContext, sx, sy, 50 / star.z)
+            drawLine(mainContext, psx,psy, sx,sy)
+            // console.log(psx, psy, sx, sy)
+            star.z -= SPEED;
+            if (star.z < 2) {
+                star.x = map(Math.random(), 0, 1, -100, 100);
+                star.y = map(Math.random(), 0, 1, -100, 100);
+                star.z = 101;
+                star.pz = 101;
+            }
+
+        }
+        // clearInterval(INTERVAL)
+    }
+    function drawCircle(ctx, x, y, r, color = "#fff") {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+    function drawLine(ctx, x1, y1, x2, y2, color = "#fff") {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    }
+</script>
+
+</html>
