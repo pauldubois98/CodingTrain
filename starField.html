@@ -9,13 +9,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 0;
+            margin: 0;
         }
 
         canvas {
             border: 1px black solid;
-            /* height: 20em; */
-            width: 90%;
-            max-height: 80%;
+            width: 100%;
+            max-height: 100%;
+        }
+
+        form {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -23,6 +29,9 @@
 <body>
     <h1>Star field generatior</h1>
     <form>
+        <label for="speed">Speed</label>
+        <input type="number" min="0" max="10" value="2" id="speed" onchange="setSpeed(speed.value)">
+        <input type="range" min="0" max="10" value="2" id="speed_range" onchange="setSpeed(speed_range.value)">
 
     </form>
     <canvas id="mainCanvas" height="800" width="1200"></canvas>
@@ -31,11 +40,11 @@
     var mainContext = mainCanvas.getContext("2d")
     var WIDTH = mainCanvas.width;
     var HEIGHT = mainCanvas.height;
-    var NUMBER_STARTS = 1000
-    var STARTS = []
+    var NUMBER_STARTS = 1000;
+    var STARTS = [];
     var INTERVAL = null;
-    var SPEED = 2
-    init()
+    var SPEED = 2;
+    init();
 
     function map(v, x0, x1, y0, y1) {
         const alpha = (y1 - y0) / (x1 - x0)
@@ -56,14 +65,14 @@
         mainContext.fillRect(0, 0, WIDTH, HEIGHT)
         mainContext.fillStyle = "#fff"
         for (var i = 0; i < STARTS.length; i++) {
-            var star = STARTS[i]
-            const sx = map(star.x / star.z, -1, 1, 0, WIDTH)
-            const sy = map(star.y / star.z, -1, 1, 0, HEIGHT)
-            const psx = map(star.x / (star.z+SPEED), -1, 1, 0, WIDTH)
-            const psy = map(star.y / (star.z+SPEED), -1, 1, 0, HEIGHT)
-            drawCircle(mainContext, sx, sy, 50 / star.z)
-            drawLine(mainContext, psx,psy, sx,sy)
-            // console.log(psx, psy, sx, sy)
+            var star = STARTS[i];
+            const sx = map(star.x / star.z, -1, 1, 0, WIDTH);
+            const sy = map(star.y / star.z, -1, 1, 0, HEIGHT);
+            const psx = map(star.x / (star.z + SPEED), -1, 1, 0, WIDTH);
+            const psy = map(star.y / (star.z + SPEED), -1, 1, 0, HEIGHT);
+            drawCircle(mainContext, sx, sy, 50 / star.z);
+            drawLine(mainContext, psx, psy, sx, sy);
+            // console.log(psx, psy, sx, sy);
             star.z -= SPEED;
             if (star.z < 2) {
                 star.x = map(Math.random(), 0, 1, -100, 100);
@@ -87,6 +96,12 @@
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = color;
         ctx.stroke();
+    }
+    
+    function setSpeed(val) {
+        SPEED = Number(val);
+        speed.value = SPEED;
+        speed_range.value = SPEED;
     }
 </script>
 
