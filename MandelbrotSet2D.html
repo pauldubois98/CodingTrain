@@ -54,8 +54,17 @@
         
         <div class="row">
             <label for="iterations">Iterations</label>
-            <input type="range" min="1" max="1000" step="1" value="100" id="iterations_range" onchange="setIterations(iterations_range.value)">
-            <input type="number" min="1" max="1000" step="1" value="100" id="iterations" onchange="setIterations(iterations.value)">
+            <input type="range" min="1" max="1000" step="1" value="100" id="iterations_range"
+                onchange="setIterations(iterations_range.value)">
+            <input type="number" min="1" max="1000" step="1" value="100" id="iterations"
+                onchange="setIterations(iterations.value)">
+        </div>
+        <div class="row">
+            <label for="divergence_threshold">Divergence Threshold</label>
+            <input type="range" min="1" max="50" step="1" value="20" id="divergence_threshold_range"
+                onchange="setDivergenceThreshold(divergence_threshold_range.value)">
+            <input type="number" min="1" max="50" step="1" value="20" id="divergence_threshold"
+                onchange="setDivergenceThreshold(divergence_threshold.value)">
         </div>
     </form>
     <canvas id="mainCanvas" height="512" width="512"></canvas>
@@ -166,6 +175,13 @@
         iterations_range.value = ITERATIONS;
         draw(mainCanvas, mainContext);
     }
+    function setDivergenceThreshold(val) {
+        DIVERGENCE_THRESHOLD = Number(val);
+        divergence_threshold.value = DIVERGENCE_THRESHOLD;
+        divergence_threshold_range.value = DIVERGENCE_THRESHOLD;
+        draw(mainCanvas, mainContext);
+    }
+
 
 
 </script>
