@@ -60,6 +60,21 @@
                 onchange="setStars(Math.round(2**stars_range.value))">
             <input type="number" min="32" max="8192" value="1024" id="stars" onchange="setStars(stars.value)">
         </div>
+        <div class="row">
+            <label for="background">Background</label>
+            <input type="checkbox" id="background" checked>
+            <input type="color" id="background_color" value="#000000">
+        </div>
+        <div class="row">
+            <label for="dots">Dots</label>
+            <input type="checkbox" id="dots" checked>
+            <input type="color" id="dots_color" value="#ffffff">
+        </div>
+        <div class="row">
+            <label for="dashes">Dashes</label>
+            <input type="checkbox" id="dashes" checked>
+            <input type="color" id="dashes_color" value="#ffffff">
+        </div>
 
     </form>
     <canvas id="mainCanvas" height="800" width="1200"></canvas>
@@ -89,18 +104,23 @@
         INTERVAL = setInterval(update, 1000 / 30); // 30 FPS
     }
     function update() {
-        mainContext.fillStyle = "#000"
-        mainContext.fillRect(0, 0, WIDTH, HEIGHT)
-        mainContext.fillStyle = "#fff"
+        mainContext.clearRect(0, 0, WIDTH, HEIGHT)
+        if (background.checked) {
+            mainContext.fillStyle = background_color.value
+            mainContext.fillRect(0, 0, WIDTH, HEIGHT)
+        }
         for (var i = 0; i < STARS.length; i++) {
             var star = STARS[i];
             const sx = map(star.x / star.z, -1, 1, 0, WIDTH);
             const sy = map(star.y / star.z, -1, 1, 0, HEIGHT);
             const psx = map(star.x / (star.z + SPEED), -1, 1, 0, WIDTH);
             const psy = map(star.y / (star.z + SPEED), -1, 1, 0, HEIGHT);
-            drawCircle(mainContext, sx, sy, 50 / star.z);
-            drawLine(mainContext, psx, psy, sx, sy);
-            // console.log(psx, psy, sx, sy);
+            if (dashes.checked) {
+                drawLine(mainContext, psx, psy, sx, sy, dashes_color.value);
+            }
+            if (dots.checked) {
+                drawCircle(mainContext, sx, sy, 50 / star.z, dots_color.value);
+            }
             star.z -= SPEED;
             if (star.z < 2) {
                 star.x = map(Math.random(), 0, 1, -100, 100);
@@ -108,7 +128,6 @@
                 star.z = 101;
                 star.pz = 101;
             }
-
         }
         // clearInterval(INTERVAL)
     }
