@@ -75,6 +75,9 @@
             <input type="number" min="1" max="50" step="1" value="20" id="divergence_threshold"
                 onchange="setDivergenceThreshold(divergence_threshold.value)">
         </div>
+        <div class="row">
+            <input type="button" value="Download" onclick="download()">
+        </div>
     </form>
     <canvas id="mainCanvas" height="512" width="512"></canvas>
 </body>
@@ -191,7 +194,12 @@
         draw(mainCanvas, mainContext);
     }
 
-
+    function download() {
+        var a = document.createElement('a');
+        a.download = `Mandelbrot_${CENTER.x}_${CENTER.y}_${INTERVAL_SIZE}.png`;
+        a.href = document.getElementById('mainCanvas').toDataURL()
+        a.click();
+    }
 
 </script>
 
