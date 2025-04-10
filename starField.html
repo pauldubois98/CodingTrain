@@ -51,6 +51,11 @@
             <input type="range" min="0" max="10" value="2" id="speed_range" onchange="setSpeed(speed_range.value)">
             <input type="number" min="0" max="10" value="2" id="speed" onchange="setSpeed(speed.value)">
         </div>
+        <div class="row">
+            <label for="stars">Stars</label>
+            <input type="range" min="0" max="10000" value="2" id="stars_range" onchange="setStars(stars_range.value)">
+            <input type="number" min="0" max="10000" value="2" id="stars" onchange="setStars(stars.value)">
+        </div>
 
     </form>
     <canvas id="mainCanvas" height="800" width="1200"></canvas>
@@ -59,8 +64,8 @@
     var mainContext = mainCanvas.getContext("2d")
     var WIDTH = mainCanvas.width;
     var HEIGHT = mainCanvas.height;
-    var NUMBER_STARTS = 1000;
-    var STARTS = [];
+    var NUMBER_STARS = 1000;
+    var STARS = [];
     var INTERVAL = null;
     var SPEED = 2;
     init();
@@ -70,8 +75,8 @@
         return y0 + ((v - x0) * alpha)
     }
     function init() {
-        for (var i = 0; i < NUMBER_STARTS; i++) {
-            STARTS.push({
+        for (var i = 0; i < NUMBER_STARS; i++) {
+            STARS.push({
                 x: map(Math.random(), 0, 1, -100, 100),
                 y: map(Math.random(), 0, 1, -100, 100),
                 z: 1 + Math.random() * 100
@@ -83,8 +88,8 @@
         mainContext.fillStyle = "#000"
         mainContext.fillRect(0, 0, WIDTH, HEIGHT)
         mainContext.fillStyle = "#fff"
-        for (var i = 0; i < STARTS.length; i++) {
-            var star = STARTS[i];
+        for (var i = 0; i < STARS.length; i++) {
+            var star = STARS[i];
             const sx = map(star.x / star.z, -1, 1, 0, WIDTH);
             const sy = map(star.y / star.z, -1, 1, 0, HEIGHT);
             const psx = map(star.x / (star.z + SPEED), -1, 1, 0, WIDTH);
@@ -116,11 +121,31 @@
         ctx.strokeStyle = color;
         ctx.stroke();
     }
-    
+
     function setSpeed(val) {
         SPEED = Number(val);
         speed.value = SPEED;
         speed_range.value = SPEED;
+    }
+    function setStars(val) {
+        const OLD_NUMBER_STARS = NUMBER_STARS;
+        NUMBER_STARS = Number(val);
+        stars.value = NUMBER_STARS;
+        stars_range.value = NUMBER_STARS;
+        if (NUMBER_STARS > OLD_NUMBER_STARS) {
+            for (var i = 0; i < NUMBER_STARS-OLD_NUMBER_STARS; i++) {
+                STARS.push({
+                    x: map(Math.random(), 0, 1, -100, 100),
+                    y: map(Math.random(), 0, 1, -100, 100),
+                    z: 1 + Math.random() * 100
+                })
+            }
+        } else {
+            for (var i = 0; i < OLD_NUMBER_STARS-NUMBER_STARS; i++) {
+                // delete one star
+                STARS.shift()
+            }
+        }
     }
 </script>
 
