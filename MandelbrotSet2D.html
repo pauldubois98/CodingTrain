@@ -48,7 +48,7 @@
         
         <div class="row">
             <label for="interval_size">Range</label>
-            <input type="range" min="0.01" max="4" step="0.01" value="2" id="interval_size_range" onchange="setIntervalSize(interval_size_range.value)">
+            <input type="range" min="-7" max="2" step="0.01" value="1" id="interval_size_range" onchange="setIntervalSize(2**interval_size_range.value)">
             <input type="number" min="0.01" max="4" step="0.01" value="2" id="interval_size" onchange="setIntervalSize(interval_size.value)">
         </div>
     </form>
@@ -151,7 +151,7 @@
             maxy: CENTER.y + INTERVAL_SIZE,
         };
         interval_size.value = INTERVAL_SIZE;
-        interval_size_range.value = INTERVAL_SIZE;
+        interval_size_range.value = Math.log2(INTERVAL_SIZE);
         draw(mainCanvas, mainContext);
     }
 
