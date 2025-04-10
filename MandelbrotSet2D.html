@@ -94,7 +94,7 @@
             <input type="checkbox" id="background" checked onchange="draw_main()">
             <input type="color" value="#ffffff" id="background_color1" onchange="draw_main()">
             <input type="color" value="#000000" id="background_color2" onchange="draw_main()">
-            <input type="checkbox" id="gradient" onchange="draw_main()">
+            <input type="checkbox" id="gradient" checked onchange="draw_main()">
             <label for="gradient" style="text-align: left;">Gradient</label>
         </div>
 
@@ -123,21 +123,19 @@
     var ITERATIONS = 100;
     var DATA = [];
     var mainContext = null;
+
+    init();
+
+    function init() {
+        mainContext = mainCanvas.getContext("2d")
+        compute_main();
+        draw_main();
+    }
+
     function map(v, minx, maxx, miny, maxy) {
         return ((v - minx) * ((maxy - miny) / (maxx - minx))) + miny;
     }
-    function init() {
-        mainContext = mainCanvas.getContext("2d")
-    }
-    init();
-    function hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
+
     function compute(canvas, ctx) {
         DATA = [];
         const currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -169,45 +167,61 @@
     function compute_main() {
         compute(mainCanvas, mainContext);
     }
-    compute_main();
 
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+            a: 255,
+        } : null;
+    }
     function draw(canvas, ctx) {
         const newImageData = ctx.createImageData(canvas.width, canvas.height);
         const data = newImageData.data;
         const fg = hexToRgb(foreground_color.value);
         const bg1 = hexToRgb(background_color1.value);
         const bg2 = hexToRgb(background_color2.value);
-        for (var i = 0; i < data.length; i++) {
-            var iter = DATA[i]
-            if (iter == ITERATIONS) {
-                if (foreground.checked) {
-                    data[4 * i + 0] = fg.r;
-                    data[4 * i + 1] = fg.g;
-                    data[4 * i + 2] = fg.b;
-                    data[4 * i + 3] = 255;
-                }
-            } else {
-                if (!gradient.checked) {
-                    data[4 * i + 0] = bg1.r;
-                    data[4 * i + 1] = bg1.g;
-                    data[4 * i + 2] = bg1.b;
-                    data[4 * i + 3] = 255;
-                } else {
-                    const v = map(iter, 0, ITERATIONS, 0, 1);
-                    data[4 * i + 0] = map(v, 0, 1, bg2.r, bg1.r);
-                    data[4 * i + 1] = map(v, 0, 1, bg2.g, bg1.g);
-                    data[4 * i + 2] = map(v, 0, 1, bg2.b, bg1.b);
-                    data[4 * i + 3] = 255;
-
+        var ITER_TO_COLOR = [];
+        if (background.checked) {
+            if (gradient.checked) {
+                for (var iter = 0; iter < ITERATIONS; iter++) {
+                    ITER_TO_COLOR.push({
+                        r: map(iter, 0, ITERATIONS, bg2.r, bg1.r),
+                        g: map(iter, 0, ITERATIONS, bg2.g, bg1.g),
+                        b: map(iter, 0, ITERATIONS, bg2.b, bg1.b),
+                        a: 255,
+                    });
                 }
             }
+            else {
+                for (var iter = 0; iter < ITERATIONS; iter++) {
+                    ITER_TO_COLOR.push(bg1);
+                }
+            }
+        } else {
+            for (var iter = 0; iter < ITERATIONS; iter++) {
+                ITER_TO_COLOR.push({ r: 0, g: 0, b: 0, a: 0 });
+            }
+        }
+        if (foreground.checked) {
+            ITER_TO_COLOR.push(fg);
+        } else {
+            ITER_TO_COLOR.push({ r: 0, g: 0, b: 0, a: 0 });
+        }
+        for (var i = 0; i < data.length / 4; i++) {
+            const iter = DATA[i];
+            data[4 * i + 0] = ITER_TO_COLOR[iter].r;
+            data[4 * i + 1] = ITER_TO_COLOR[iter].g;
+            data[4 * i + 2] = ITER_TO_COLOR[iter].b;
+            data[4 * i + 3] = ITER_TO_COLOR[iter].a;
         }
         ctx.putImageData(newImageData, 0, 0);
     }
     function draw_main() {
         draw(mainCanvas, mainContext);
     }
-    draw_main();
 
     function setCenterX(val) {
         CENTER.x = Number(val);
