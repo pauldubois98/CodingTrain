@@ -26,14 +26,16 @@
         }
 
         .row {
+            width: 20em;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         label {
-            width: 5em;
             text-align: right;
             margin-right: 5px;
+            flex: 1;
         }
 
         input[type=number] {
@@ -42,6 +44,26 @@
 
         input[type=button] {
             margin: 0.5em;
+        }
+
+        input[type=color] {
+            width: 3em;
+        }
+
+        .left {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: end;
+            flex: 1;
+        }
+
+        .right {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: baseline;
+            flex: 1;
         }
     </style>
 </head>
@@ -90,18 +112,26 @@
                 onchange="setDivergenceThreshold(divergence_threshold.value)">
         </div>
         <div class="row">
-            <label for="background">Background</label>
-            <input type="checkbox" id="background" checked onchange="draw_main()">
-            <input type="color" value="#ffffff" id="background_color1" onchange="draw_main()">
-            <input type="color" value="#000000" id="background_color2" onchange="draw_main()">
-            <input type="checkbox" id="gradient" checked onchange="draw_main()">
-            <label for="gradient" style="text-align: left;">Gradient</label>
+            <div class="left">
+                <label for="background">Background</label>
+                <input type="checkbox" id="background" checked onchange="draw_main()">
+                <input type="color" value="#ffffff" id="background_color1" onchange="draw_main()">
+            </div>
+            <div class="right">
+                <input type="color" value="#000000" id="background_color2" onchange="draw_main()">
+                <input type="checkbox" id="gradient" checked onchange="draw_main()">
+                <label for="gradient" style="text-align: left;">Gradient</label>
+            </div>
         </div>
 
         <div class="row">
-            <label for="foreground">Foreground</label>
-            <input type="checkbox" id="foreground" checked onchange="draw_main()">
-            <input type="color" value="#000000" id="foreground_color" onchange="draw_main()">
+            <div class="left">
+                <label for="foreground">Foreground</label>
+                <input type="checkbox" id="foreground" checked onchange="draw_main()">
+                <input type="color" value="#000000" id="foreground_color" onchange="draw_main()">
+            </div>
+            <div class="right">
+            </div>
         </div>
         <div class="row">
             <input type="button" value="Download" onclick="download()">
