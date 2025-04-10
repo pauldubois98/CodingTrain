@@ -27,6 +27,70 @@
 </body>
 
 <script>
-    
+    var CENTER = { x: 0, y: 0 };
+    var INTERVAL_SIZE = 2;
+    var INTERVAL = {
+        minx: CENTER.x - INTERVAL_SIZE,
+        maxx: CENTER.x + INTERVAL_SIZE,
+        miny: CENTER.y - INTERVAL_SIZE,
+        maxy: CENTER.y + INTERVAL_SIZE,
+    };
+    var DIVERGENCE_THRESHOLD = 16;
+    var ITERATIONS = 100
+    var mainContext = null;
+    function map(v, minx, maxx, miny, maxy) {
+        return ((v - minx) * ((maxy - miny) / (maxx - minx))) + miny;
+    }
+    function init() {
+        mainContext = mainCanvas.getContext("2d")
+    }
+    init();
+    function draw(canvas, ctx) {
+        const currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const newImageData = ctx.createImageData(currentImageData);
+        const data = newImageData.data;
+        for (var i = 0; i < data.length; i += 4) {
+            const x = (i / 4) % canvas.width;
+            const y = ((i / 4) - x) / canvas.height;
+            const Z = {
+                x: map(x, 0, canvas.width - 1, INTERVAL.minx, INTERVAL.maxx),
+                y: map(y, 0, canvas.height - 1, INTERVAL.miny, INTERVAL.maxy),
+            };
+            var z = Z;
+            var iter = 0
+            while (iter < ITERATIONS) {
+                const a = (z.x * z.x) - (z.y * z.y);
+                const b = 2 * z.x * z.y;
+                z = {
+                    x: a + Z.x,
+                    y: b + Z.y,
+                }
+                if (Math.abs(z.x) + Math.abs(z.y) > DIVERGENCE_THRESHOLD) {
+                    break;
+                }
+                iter++;
+            }
+            if (iter == ITERATIONS) {
+                data[i + 0] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+                data[i + 3] = 255;
+            } else {
+                // const divergence = map(iter, 0, ITERATIONS, 0,1);
+                // const color = map(Math.sqrt(divergence), 0, 1, 0,255);
+                const color = map(iter, 0, ITERATIONS, 0,255);
+                data[i + 0] = color;
+                data[i + 1] = color;
+                data[i + 2] = color;
+                data[i + 3] = 255;
+            }
+        }
+        ctx.putImageData(newImageData, 0, 0);
+    }
+    draw(mainCanvas, mainContext)
+
+
+
 </script>
+
 </html>
