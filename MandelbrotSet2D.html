@@ -35,10 +35,12 @@
             text-align: right;
             margin-right: 5px;
         }
-        input[type=number]{
+
+        input[type=number] {
             width: 4em;
         }
-        input[type=button]{
+
+        input[type=button] {
             margin: 0.5em;
         }
     </style>
@@ -88,6 +90,8 @@
                 onchange="setDivergenceThreshold(divergence_threshold.value)">
         </div>
         <div class="row">
+            <label for="binary">Binary</label>
+            <input type="checkbox" id="binary" onchange="draw(mainCanvas, mainContext)">
             <input type="button" value="Download" onclick="download()">
         </div>
     </form>
@@ -144,13 +148,21 @@
                 data[i + 2] = 0;
                 data[i + 3] = 255;
             } else {
-                // const divergence = map(iter, 0, ITERATIONS, 0,1);
-                // const color = map(Math.sqrt(divergence), 0, 1, 0,255);
-                const color = map(iter, 0, ITERATIONS, 0, 255);
-                data[i + 0] = color;
-                data[i + 1] = color;
-                data[i + 2] = color;
-                data[i + 3] = 255;
+                if (binary.checked) {
+                    data[i + 0] = 255;
+                    data[i + 1] = 255;
+                    data[i + 2] = 255;
+                    data[i + 3] = 255;
+                } else {
+                    // const divergence = map(iter, 0, ITERATIONS, 0,1);
+                    // const color = map(Math.sqrt(divergence), 0, 1, 0,255);
+                    const color = map(iter, 0, ITERATIONS, 0, 255);
+                    data[i + 0] = color;
+                    data[i + 1] = color;
+                    data[i + 2] = color;
+                    data[i + 3] = 255;
+
+                }
             }
         }
         ctx.putImageData(newImageData, 0, 0);
