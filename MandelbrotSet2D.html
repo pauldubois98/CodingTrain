@@ -64,18 +64,18 @@
         for (var i = 0; i < data.length; i += 4) {
             const x = (i / 4) % canvas.width;
             const y = ((i / 4) - x) / canvas.height;
-            const Z = {
+            const C = {
                 x: map(x, 0, canvas.width - 1, INTERVAL.minx, INTERVAL.maxx),
                 y: map(y, 0, canvas.height - 1, INTERVAL.miny, INTERVAL.maxy),
             };
-            var z = Z;
+            var z = C;
             var iter = 0
             while (iter < ITERATIONS) {
                 const a = (z.x * z.x) - (z.y * z.y);
                 const b = 2 * z.x * z.y;
                 z = {
-                    x: a + Z.x,
-                    y: b + Z.y,
+                    x: a + C.x,
+                    y: b + C.y,
                 }
                 if (Math.abs(z.x) + Math.abs(z.y) > DIVERGENCE_THRESHOLD) {
                     break;
@@ -90,7 +90,7 @@
             } else {
                 // const divergence = map(iter, 0, ITERATIONS, 0,1);
                 // const color = map(Math.sqrt(divergence), 0, 1, 0,255);
-                const color = map(iter, 0, ITERATIONS, 0,255);
+                const color = map(iter, 0, ITERATIONS, 0, 255);
                 data[i + 0] = color;
                 data[i + 1] = color;
                 data[i + 2] = color;
