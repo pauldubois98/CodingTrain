@@ -18,11 +18,23 @@
             max-width: 100%;
             max-height: 95%;
         }
+
+        .row {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 
 <body>
     <h1>Mandelbrot Set</h1>
+    <form>
+        <div class="row">
+            <label for="center_x">Center x:</label>
+            <input type="range" min="-2" max="2" step="0.01" value="0" id="center_x_range" onchange="setCenterX(center_x_range.value)">
+            <input type="number" min="-2" max="2" step="0.01" value="0" id="center_x" onchange="setCenterX(center_x.value)">
+        </div>
+    </form>
     <canvas id="mainCanvas" height="512" width="512"></canvas>
 </body>
 
@@ -89,6 +101,18 @@
     }
     draw(mainCanvas, mainContext)
 
+    function setCenterX(val) {
+        CENTER.x = Number(val);
+        INTERVAL = {
+            minx: CENTER.x - INTERVAL_SIZE,
+            maxx: CENTER.x + INTERVAL_SIZE,
+            miny: CENTER.y - INTERVAL_SIZE,
+            maxy: CENTER.y + INTERVAL_SIZE,
+        };
+        center_x.value = CENTER.x;
+        center_x_range.value = CENTER.x;
+        draw(mainCanvas, mainContext);
+    }
 
 
 </script>
