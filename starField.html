@@ -76,6 +76,11 @@
             <input type="color" id="dashes_color" value="#ffffff">
         </div>
 
+        <div class="row">
+            <input type="button" value="Animate" id="animateON" onclick="setAnimateON()" disabled>
+            <input type="button" value="Stop" id="animateOFF" onclick="setAnimateOFF()">
+            <input type="number" min="10" max="1000" value="20" id="animateTime" onchange="setAnimateON()" placeholder="ms/frames">
+        </div>
     </form>
     <canvas id="mainCanvas" height="800" width="1200"></canvas>
 </body>
@@ -101,7 +106,7 @@
                 z: 1 + Math.random() * 100
             })
         }
-        INTERVAL = setInterval(update, 1000 / 30); // 30 FPS
+        INTERVAL = setInterval(update, 20); // 50 FPS
     }
     function update() {
         mainContext.clearRect(0, 0, WIDTH, HEIGHT)
@@ -129,7 +134,6 @@
                 star.pz = 101;
             }
         }
-        // clearInterval(INTERVAL)
     }
     function drawCircle(ctx, x, y, r, color = "#fff") {
         ctx.beginPath();
@@ -168,6 +172,22 @@
                 STARS.shift()
             }
         }
+    }
+    function setAnimateON() {
+        if (INTERVAL != null) {
+            clearInterval(INTERVAL);
+        }
+        INTERVAL = setInterval(update, Math.max(5, Number(animateTime.value)));
+        animateON.disabled = true;
+        animateOFF.disabled = false;
+    }
+    function setAnimateOFF() {
+        if (INTERVAL != null) {
+            clearInterval(INTERVAL);
+        }
+        INTERVAL = null;
+        animateON.disabled = false;
+        animateOFF.disabled = true;
     }
 </script>
 
