@@ -23,6 +23,12 @@
             display: flex;
             align-items: center;
         }
+
+        label{
+            width: 4em;
+            text-align: right;
+            margin-right: 5px;
+        }
     </style>
 </head>
 
@@ -38,6 +44,12 @@
             <label for="center_y">Center <math><mi>y</mi></math></label>
             <input type="range" min="-1" max="1" step="0.01" value="0" id="center_y_range" onchange="setCenterY(center_y_range.value)">
             <input type="number" min="-1" max="1" step="0.01" value="0" id="center_y" onchange="setCenterY(center_y.value)">
+        </div>
+        
+        <div class="row">
+            <label for="interval_size">Range</label>
+            <input type="range" min="0.01" max="4" step="0.01" value="2" id="interval_size_range" onchange="setIntervalSize(interval_size_range.value)">
+            <input type="number" min="0.01" max="4" step="0.01" value="2" id="interval_size" onchange="setIntervalSize(interval_size.value)">
         </div>
     </form>
     <canvas id="mainCanvas" height="512" width="512"></canvas>
@@ -128,6 +140,18 @@
         };
         center_y.value = CENTER.y;
         center_y_range.value = CENTER.y;
+        draw(mainCanvas, mainContext);
+    }
+    function setIntervalSize(val) {
+        INTERVAL_SIZE = Number(val);
+        INTERVAL = {
+            minx: CENTER.x - INTERVAL_SIZE,
+            maxx: CENTER.x + INTERVAL_SIZE,
+            miny: CENTER.y - INTERVAL_SIZE,
+            maxy: CENTER.y + INTERVAL_SIZE,
+        };
+        interval_size.value = INTERVAL_SIZE;
+        interval_size_range.value = INTERVAL_SIZE;
         draw(mainCanvas, mainContext);
     }
 
