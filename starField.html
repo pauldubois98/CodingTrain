@@ -94,6 +94,7 @@
         </div>
         <div class="row">
             <input type="button" value="Start recording" id="record" onclick="recording()">
+            <input type="number" min="1" max="100" value="30" id="recording_fps" placeholder="fps">
             <input type="button" value="Download" id="download_button" onclick="download()" disabled>
         </div>
     </form>
@@ -205,18 +206,10 @@
         animateON.disabled = false;
         animateOFF.disabled = true;
     }
-    var videoStream = mainCanvas.captureStream(30);
-    var mediaRecorder = new MediaRecorder(videoStream);
+
+    var videoStream = null;
+    var mediaRecorder = null;
     var chunks = [];
-    mediaRecorder.ondataavailable = function (e) {
-        chunks.push(e.data);
-    };
-    mediaRecorder.onstop = function (e) {
-        var blob = new Blob(chunks, { 'type': 'video/webm' });
-        chunks = [];
-        var videoURL = URL.createObjectURL(blob);
-        video_record.src = videoURL;
-    };
     var RECORDING = false;
     function recording() {
         if (RECORDING) {
@@ -224,7 +217,21 @@
             record.value = "Start recording";
             RECORDING = false;
             download_button.disabled = false;
+            recording_fps.disabled = false;
         } else {
+            videoStream = mainCanvas.captureStream(Number(recording_fps.value));
+            recording_fps.disabled = true;
+            mediaRecorder = new MediaRecorder(videoStream);
+            chunks = [];
+            mediaRecorder.ondataavailable = function (e) {
+                chunks.push(e.data);
+            };
+            mediaRecorder.onstop = function (e) {
+                var blob = new Blob(chunks, { 'type': 'video/webm' });
+                chunks = [];
+                var videoURL = URL.createObjectURL(blob);
+                video_record.src = videoURL;
+            };
             mediaRecorder.start();
             record.value = "Stop recording";
             RECORDING = true;
