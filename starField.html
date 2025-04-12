@@ -102,7 +102,7 @@
     <video id="video_record"></video>
 </body>
 <script>
-    var mainContext = mainCanvas.getContext("2d")
+    var mainContext = null;
     var WIDTH = mainCanvas.width;
     var HEIGHT = mainCanvas.height;
     var NUMBER_STARS = 1000;
@@ -116,6 +116,7 @@
         return y0 + ((v - x0) * alpha)
     }
     function init() {
+        mainContext = mainCanvas.getContext("2d");
         for (var i = 0; i < NUMBER_STARS; i++) {
             STARS.push({
                 x: map(Math.random(), 0, 1, -100, 100),
